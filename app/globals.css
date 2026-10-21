@@ -1,0 +1,138 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-manrope), Arial, sans-serif;
+  --color-dark-100: #eceef1;
+  --color-dark-200: #d5d9e0;
+  --color-dark-300: #b0b8c5;
+  --color-dark-400: #8590a2;
+  --color-dark-700: #434c5d;
+  --color-dark-900: #1a1f2b;
+  --color-dark-950: #0d1117;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+}
+
+body {
+  margin: 0;
+  background: var(--color-dark-950);
+  color: var(--color-dark-200);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.tech-badge {
+  flex-shrink: 0;
+  border: 1px solid rgb(67 76 93 / 60%);
+  border-radius: 12px;
+  background: rgb(13 17 23 / 60%);
+  padding: 10px 20px;
+  color: var(--color-dark-200);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.marquee-window {
+  position: relative;
+  overflow: hidden;
+}
+
+.marquee-window::before,
+.marquee-window::after {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: 96px;
+  pointer-events: none;
+  content: "";
+}
+
+.marquee-window::before {
+  left: 0;
+  background: linear-gradient(to right, var(--color-dark-900), transparent);
+}
+
+.marquee-window::after {
+  right: 0;
+  background: linear-gradient(to left, var(--color-dark-900), transparent);
+}
+
+.original-track {
+  display: flex;
+  width: max-content;
+  gap: 12px;
+  animation: original-marquee 40s linear infinite;
+}
+
+.original-track-reverse {
+  animation-duration: 46s;
+  animation-direction: reverse;
+}
+
+@keyframes original-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+.adaptive-track {
+  display: flex;
+  width: max-content;
+  animation: adaptive-marquee var(--marquee-duration) linear infinite;
+  will-change: transform;
+}
+
+.adaptive-track[data-ready="false"] {
+  animation: none;
+}
+
+.adaptive-track-reverse {
+  animation-direction: reverse;
+}
+
+.adaptive-group {
+  display: flex;
+  flex: 0 0 auto;
+  width: max-content;
+  gap: 12px;
+  padding-right: 12px;
+}
+
+.adaptive-window::before,
+.adaptive-window::after {
+  width: clamp(24px, 6vw, 96px);
+}
+
+@keyframes adaptive-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(-1 * var(--marquee-distance))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .original-track,
+  .adaptive-track {
+    animation: none;
+    transform: none;
+    will-change: auto;
+  }
+
+  .adaptive-track {
+    width: 100%;
+  }
+
+  .adaptive-group:first-child {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 16px;
+  }
+
+  .adaptive-group[aria-hidden="true"],
+  .adaptive-window::before,
+  .adaptive-window::after {
+    display: none;
+  }
+}
